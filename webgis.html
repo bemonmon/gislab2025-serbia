@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mapping PM10 Exposure in Serbia – WebGIS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.3.0/ol.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, 'Open Sans', sans-serif;
+      background-color: #f4f6f8;
+    }
+
+    .map-header {
+      background: #003973;
+      color: white;
+      padding: 55px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .map-header h1 {
+      margin: 0;
+    }
+
+    .map-header p {
+      margin: 4px 0 0;
+      font-size: 0.95em;
+      color: #ddd;
+    }
+
+    .map-buttons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .map-buttons a {
+      display: inline-block;
+      margin-left: 10px;
+      background: white;
+      color: #003973;
+      padding: 6px 12px;
+      font-size: 13px;
+      text-decoration: none;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      transition: background 0.2s;
+    }
+
+    .map-buttons a:hover {
+      background: #e0e0e0;
+    }
+
+    #map {
+      width: 100%;
+      height: 90vh;
+      border-top: 1px solid #ccc;
+    }
+
+    #mouse-position {
+      padding: 8px 12px;
+      font-size: 0.9em;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    #basemap-switcher {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 12px 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      font-size: 14px;
+    }
+
+    #legend, #legend-bivariate {
+      background: white;
+      padding: 10px;
+      font-size: 13px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+
+    #legend {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+    }
+
+    #legend-bivariate {
+      position: absolute;
+      bottom: 30px;
+      right: 20px;
+      max-width: 180px;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+    input[type="radio"],
+    input[type="checkbox"] {
+      accent-color: #003973;
+    }
+
+    #basemap-switcher {
+      font-family: inherit;
+      line-height: 1.4;
+      width: 180px;
+    }
+
+    #basemap-switcher hr {
+      margin: 10px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="map-header">
+    <h1>Mapping PM10 Exposure in Serbia</h1>
+    <p>Interactive WebGIS Visualization – GIS Lab 2025</p>
+  </div>
+
+  <div class="map-buttons">
+    <a href="index.html" class="text-white me-3">Home</a>
+    <a href="results.html" class="text-white me-3">Results</a>
+    <a href="webgis.html" class="text-white">WebGIS</a>
+  </div>
+
+  <div id="basemap-switcher">
+    <strong>Base Map</strong>
+    <label><input type="radio" name="basemap" value="OpenStreetMap" checked> OpenStreetMap</label>
+    <label><input type="radio" name="basemap" value="ESRI Satellite"> ESRI Satellite</label>
+    <hr>
+    <label><input type="checkbox" id="toggle-bivariate" checked> Show Bivariate Map</label>
+  </div>
+
+  <div id="legend">
+    <strong>PM10 AAD 2022 (g/m³)</strong><br>
+    <div><span style="background:#05238b;width:16px;height:12px;display:inline-block;"></span> ≤ -10</div>
+    <div><span style="background:#0d3ebd;width:16px;height:12px;display:inline-block;"></span> -10 to -4</div>
+    <div><span style="background:#84ef2e;width:16px;height:12px;display:inline-block;"></span> -4 to 0</div>
+    <div><span style="background:#f2f42a;width:16px;height:12px;display:inline-block;"></span> 0 to 4</div>
+    <div><span style="background:#e39b16;width:16px;height:12px;display:inline-block;"></span> 4 to 10</div>
+    <div><span style="background:#ff1533;width:16px;height:12px;display:inline-block;"></span> > 10</div>
+  </div>
+
+  <div id="legend-bivariate">
+        <div id="legend-bivariate" style="position: absolute; bottom: 30px; right: 20px; background: white; padding: 10px; font-size: 13px; border-radius: 8px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.15); z-index: 1000;">
+  <strong>Bivariate Legend</strong>
+  <div style="
+  display: grid;
+  grid-template-columns: repeat(5, 25px);
+  grid-template-rows: repeat(5, 25px);
+  gap: 4px;
+  margin-top: 8px;
+">
+    <!-- Row 1 -->
+    <div style="background:#ffffff;" title="Low Pop, Low PM10"></div>
+    <div style="background:#ffe0ea;" title="Low Pop, PM10 ↑"></div>
+    <div style="background:#ffc9dc;" title="Low Pop, Mid PM10"></div>
+    <div style="background:#ffb2cd;" title="Low Pop, High PM10"></div>
+    <div style="background:#ff99be;" title="Low Pop, Very High PM10"></div>
+
+    <!-- Row 2 -->
+    <div style="background:#e0f8f8;" title="Pop ↑, Low PM10"></div>
+    <div style="background:#b7e6e6;" title="Pop ↑, PM10 ↑"></div>
+    <div style="background:#a3d4d4;" title="Pop ↑, Mid PM10"></div>
+    <div style="background:#c0c0d9;" title="Pop ↑, High PM10"></div>
+    <div style="background:#d8a7c8;" title="Pop ↑, Very High PM10"></div>
+
+    <!-- Row 3 -->
+    <div style="background:#b0f0f0;" title="Pop ↑↑, Low PM10"></div>
+    <div style="background:#99dddd;" title="Pop ↑↑, PM10 ↑"></div>
+    <div style="background:#82cbcb;" title="Pop ↑↑, Mid PM10"></div>
+    <div style="background:#6bb8b8;" title="Pop ↑↑, High PM10"></div>
+    <div style="background:#559999;" title="Pop ↑↑, Very High PM10"></div>
+
+    <!-- Row 4 -->
+    <div style="background:#8affff;" title="Pop High, Low PM10"></div>
+    <div style="background:#6eefff;" title="Pop High, PM10 ↑"></div>
+    <div style="background:#54dbff;" title="Pop High, Mid PM10"></div>
+    <div style="background:#3fc8ff;" title="Pop High, High PM10"></div>
+    <div style="background:#00b5ff;" title="Pop High, Very High PM10"></div>
+
+    <!-- Row 5 -->
+    <div style="background:#adffff;" title="Very High Pop, Low PM10"></div>
+    <div style="background:#82faff;" title="Very High Pop, PM10 ↑"></div>
+    <div style="background:#58f0ff;" title="Very High Pop, Mid PM10"></div>
+    <div style="background:#2bd6ff;" title="Very High Pop, High PM10"></div>
+    <div style="background:#0099cc;" title="Very High Pop, Very High PM10"></div>
+  </div>
+  <div style="font-size: 11px; margin-top: 6px;">
+    ↑ Population Density<br>
+    → PM10 Concentration
+  </div>
+</div>
+
+      <!-- Insert 5x5 color grid -->
+      <!-- Colors trimmed for brevity, assume already inserted as in earlier message -->
+    </div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+  <div id="mouse-position"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
+  <script src="assets/js/map.js"></script>
+</body>
+</html>

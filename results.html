@@ -1,0 +1,67 @@
+<!-- Updated results.html with PM10 pie chart -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Results 🟠 Mapping Air Quality in Serbia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Open Sans', sans-serif; background-color: #f8f9fa; }
+    .section { padding: 80px 0; }
+    footer { background: #f8f9fa; padding: 20px 0; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header class="p-3 bg-light border-bottom fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <h2 class="mb-0"><a href="index.html" class="text-decoration-none">GIS Lab 2025</a></h2>
+    <nav>
+      <a href="index.html" class="me-3 fw-bold">Home</a>
+      <a href="results.html" class="me-3 fw-bold">Results</a>
+      <a href="webgis.html" class="fw-bold">WebGIS</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container section" style="margin-top: 100px;">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold">Results & Analysis</h1>
+    <p class="lead">Population exposure to PM10 levels in Serbia (2013–2022)</p>
+  </div>
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-body text-center">
+      <h5 class="card-title">PM10 – Annual Mean Concentration (2013–2022)</h5>
+      <img src="assets/images/PM10.png" class="img-fluid rounded shadow-sm mb-2" alt="PM10 Mean Chart">
+      <p class="text-muted">Mean PM10 levels across Serbia, based on zonal statistics.</p>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-body text-center">
+      <h5 class="card-title">PM10 – Annual Maximum Concentration (2013–2022)</h5>
+      <img src="assets/images/PM10 maximum.png" class="img-fluid rounded shadow-sm mb-2" alt="PM10 Max Chart">
+      <p class="text-muted">Maximum PM10 levels recorded across Serbia each year.</p>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body text-center">
+      <h5 class="card-title">PM10 – Population Exposure Distribution (2020)</h5>
+      <img src="assets/images/serbia_pm10_pie.png" class="img-fluid rounded shadow-sm mb-2" alt="PM10 Pie Chart">
+      <p class="text-muted">Distribution of population exposure classes based on PM10 concentration in 2020.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="mb-0">&copy; 2025 <strong>GIS Lab</strong>. All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
